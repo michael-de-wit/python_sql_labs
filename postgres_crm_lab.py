@@ -97,7 +97,7 @@ while user_wants_to_quit == False:
         if user_wants_to_view_employees == True:
             try:
                 print("")
-                cursor.execute("SELECT * FROM employees")
+                cursor.execute("SELECT e.id, e.employee_name, c.company_name FROM employees e LEFT JOIN companies c on e.company_id=c.id")
                 print(cursor.fetchall())
             except:
                 print("Something went wrong.")
@@ -130,7 +130,8 @@ while user_wants_to_quit == False:
                 print("Company id not added. Something went wrong.")
 
         elif user_wants_to_modify_employee:
-            cursor.execute("SELECT * FROM employees")
+            print("")
+            cursor.execute("SELECT e.id, e.employee_name, c.company_name FROM employees e LEFT JOIN companies c on e.company_id=c.id")
             print(cursor.fetchall())
             id_of_employee_to_modify = input("\n Which employee do you want to modify? employee id: ")
             print("")
@@ -143,7 +144,7 @@ while user_wants_to_quit == False:
             cursor.execute("SELECT company_name from companies WHERE id = %s", [company_id_of_employee_to_modify])
             name_of_company_of_employee_to_modify = cursor.fetchone()[0]    
 
-            user_response_action_to_take_on_employee_modification = input(f"\n What do you want to modify for eid {id_of_employee_to_modify} {name_of_employee_to_modify} from cid {company_id_of_employee_to_modify} {name_of_company_of_employee_to_modify}? \n 1. Employee name \n 2. Company ID \n 3. quit ")
+            user_response_action_to_take_on_employee_modification = input(f"\n What do you want to modify for eid {id_of_employee_to_modify} {name_of_employee_to_modify} from cid {company_id_of_employee_to_modify} {name_of_company_of_employee_to_modify}? \n 1. Employee name \n 2. Company ID \n 3. quit \n Response: ")
 
             user_wants_to_modify_employee_name = True if user_response_action_to_take_on_employee_modification == '1' else False
             user_wants_to_modify_employee_company_id = True if user_response_action_to_take_on_employee_modification == '2' else False
@@ -164,10 +165,14 @@ while user_wants_to_quit == False:
                 try:
                     cursor.execute("UPDATE employees SET company_id=%s WHERE id = %s", [new_company_id_of_employee_to_modify, id_of_employee_to_modify])
                     connection.commit()
+        
+                    cursor.execute("SELECT e.id, e.employee_name, c.company_name FROM employees e LEFT JOIN companies c on e.company_id=c.id WHERE e.id=%s", [id_of_employee_to_modify])
+                    print(cursor.fetchall())
+
                 except:
                     print("Not updated. Something went wrong.")
         elif user_wants_to_remove_employee:
-            cursor.execute("SELECT * FROM employees")
+            cursor.execute("SELECT e.id, e.employee_name, c.company_name FROM employees e LEFT JOIN companies c on e.company_id=c.id")
             print(cursor.fetchall())
             id_of_employee_to_remove = input("\n Which employee do you want to remove? employee id: ")  
 
